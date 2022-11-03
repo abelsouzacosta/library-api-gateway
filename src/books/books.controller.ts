@@ -4,6 +4,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Inject,
+  Param,
   Post,
   UsePipes,
   ValidationPipe,
@@ -19,26 +21,17 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { RABBITMQ_URL } from 'src/config';
 import { MessagePatterns } from 'src/constants/enums/message-patterns.enum';
-import { Queues } from 'src/constants/enums/queues.enum';
 import { BookListDto } from 'src/docs/swagger/book-list.dto';
 import { CreateBookDto } from './domain/dto/create-book.dto';
 
 @ApiTags('books')
 @Controller('books')
 export class BooksController {
-  private readonly client: ClientProxy;
-
-  constructor() {
-    this.client = ClientProxyFactory.create({
-      transport: Transport.RMQ,
-      options: {
-        urls: [RABBITMQ_URL],
-        queue: Queues.LIBRARY,
-      },
-    });
-  }
+  constructor(
+    @Inject('BOOK_SERVICE')
+    private readonly client: ClientProxy,
+  ) {}
 
   @ApiOperation({ summary: 'Creates a new Book entity' })
   @ApiCreatedResponse({
@@ -62,5 +55,17 @@ export class BooksController {
   @Get()
   list() {
     return this.client.send(MessagePatterns.LIST_BOOKS, {});
+  }
+
+  @ApiOperation({ summary: 'Gets a specific instance of book' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Instance of book',
+    type: BookListDto,
+    isArray: false,
+  })
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.client.send(MessagePatterns.GET_CATEGORY, id);
   }
 }
