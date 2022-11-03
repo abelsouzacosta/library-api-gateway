@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   UsePipes,
   ValidationPipe,
@@ -33,5 +34,10 @@ export class BooksController {
   @UsePipes(new ValidationPipe())
   create(@Body() data: CreateBookDto) {
     return this.client.emit(MessagePatterns.CREATE_BOOK, data);
+  }
+
+  @Get()
+  list() {
+    return this.client.send(MessagePatterns.LIST_BOOKS, {});
   }
 }
