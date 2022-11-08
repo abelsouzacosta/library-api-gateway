@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Inject,
   Param,
+  Patch,
   Post,
   UsePipes,
   ValidationPipe,
@@ -20,6 +21,7 @@ import {
 import { MessagePatterns } from 'src/constants/enums/message-patterns.enum';
 import { BookListDto } from 'src/docs/swagger/book-list.dto';
 import { CreateBookDto } from './domain/dto/create-book.dto';
+import { UpdateBookDto } from './domain/dto/update-book.dto';
 
 @ApiTags('books')
 @Controller('books')
@@ -63,5 +65,16 @@ export class BooksController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.client.send(MessagePatterns.GET_BOOK, id);
+  }
+
+  @ApiOperation({ summary: 'Updates a specific instance of book' })
+  @ApiCreatedResponse({
+    status: HttpStatus.CREATED,
+    description: 'An event was emitted to update book instance',
+  })
+  @Patch(':id')
+  @HttpCode(HttpStatus.CREATED)
+  update(@Param('id') id: string, @Body() data: UpdateBookDto) {
+    return this.client.emit(MessagePatterns.UPDATE_BOOK, { id, data });
   }
 }
