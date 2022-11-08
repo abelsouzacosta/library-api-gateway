@@ -62,6 +62,6 @@ export class BooksController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send(MessagePatterns.GET_CATEGORY, id);
+    return this.client.send(MessagePatterns.GET_BOOK, id);
   }
 }
