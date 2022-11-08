@@ -12,7 +12,7 @@ import { BooksController } from './books.controller';
         transport: Transport.RMQ,
         options: {
           urls: [RABBITMQ_URL],
-          queue: Queues.LIBRARY,
+          queue: Queues.BOOKS,
         },
       },
     ]),
