@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { EventPatterns } from 'src/constants/enums/event-patterns.enum';
 import { MessagePatterns } from 'src/constants/enums/message-patterns.enum';
 import { CreateBookDto } from './domain/dto/create-book.dto';
 import { UpdateBookDto } from './domain/dto/update-book.dto';
+import { BookNotFoundException } from './domain/exceptions/book-not-found.exception';
 
 @Injectable()
 export class BooksService {
@@ -21,7 +23,13 @@ export class BooksService {
   }
 
   async findById(id: string) {
-    return this.client.send(MessagePatterns.GET_BOOK, id);
+    const book = await firstValueFrom(
+      this.client.send(MessagePatterns.GET_BOOK, id),
+    );
+
+    if (!book) throw new BookNotFoundException(id);
+
+    return book;
   }
 
   async update(id: string, data: UpdateBookDto) {
