@@ -27,4 +27,8 @@ export class BooksService {
   async update(id: string, data: UpdateBookDto) {
     return this.client.emit(EventPatterns.UPDATE_BOOK, { id, data });
   }
+
+  async delete(id: string) {
+    return this.client.emit(EventPatterns.DELETE_BOOK, id);
+  }
 }

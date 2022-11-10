@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -72,5 +73,11 @@ export class BooksController {
   @HttpCode(HttpStatus.CREATED)
   update(@Param('id') id: string, @Body() data: UpdateBookDto) {
     return this.service.update(id, data);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  delete(@Param('id') id: string) {
+    return this.service.delete(id);
   }
 }
