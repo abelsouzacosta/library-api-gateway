@@ -3,6 +3,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { RABBITMQ_URL } from 'src/config';
 import { Queues } from 'src/constants/enums/queues.enum';
 import { BooksController } from './books.controller';
+import { BooksService } from './books.service';
 
 @Module({
   imports: [
@@ -18,5 +19,6 @@ import { BooksController } from './books.controller';
     ]),
   ],
   controllers: [BooksController],
+  providers: [BooksService],
 })
 export class BooksModule {}

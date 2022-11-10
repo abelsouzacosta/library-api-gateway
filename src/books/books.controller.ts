@@ -11,25 +11,21 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
 import {
   ApiCreatedResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { MessagePatterns } from 'src/constants/enums/message-patterns.enum';
 import { BookListDto } from 'src/docs/swagger/book-list.dto';
+import { BooksService } from './books.service';
 import { CreateBookDto } from './domain/dto/create-book.dto';
 import { UpdateBookDto } from './domain/dto/update-book.dto';
 
 @ApiTags('books')
 @Controller('books')
 export class BooksController {
-  constructor(
-    @Inject('BOOK_SERVICE')
-    private readonly client: ClientProxy,
-  ) {}
+  constructor(private readonly service: BooksService) {}
 
   @ApiOperation({ summary: 'Creates a new Book entity' })
   @ApiCreatedResponse({
@@ -40,7 +36,7 @@ export class BooksController {
   @HttpCode(HttpStatus.CREATED)
   @UsePipes(new ValidationPipe())
   create(@Body() data: CreateBookDto) {
-    return this.client.emit(MessagePatterns.CREATE_BOOK, data);
+    return this.service.create(data);
   }
 
   @ApiOperation({ summary: 'Gets a list of all books in the database' })
@@ -52,7 +48,7 @@ export class BooksController {
   })
   @Get()
   list() {
-    return this.client.send(MessagePatterns.LIST_BOOKS, {});
+    return this.service.list();
   }
 
   @ApiOperation({ summary: 'Gets a specific instance of book' })
@@ -64,7 +60,7 @@ export class BooksController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.client.send(MessagePatterns.GET_BOOK, id);
+    return this.service.findById(id);
   }
 
   @ApiOperation({ summary: 'Updates a specific instance of book' })
@@ -75,6 +71,6 @@ export class BooksController {
   @Patch(':id')
   @HttpCode(HttpStatus.CREATED)
   update(@Param('id') id: string, @Body() data: UpdateBookDto) {
-    return this.client.emit(MessagePatterns.UPDATE_BOOK, { id, data });
+    return this.service.update(id, data);
   }
 }
