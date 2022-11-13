@@ -1,0 +1,4 @@
+export enum ServiceNames {
+  BOOK_SERVICE = 'BOOK_SERVICE',
+  CATEGORY_SERVICE = 'CATEGORY_SERVICE',
+}
