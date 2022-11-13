@@ -1,15 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { EventPatterns } from 'src/constants/enums/event-patterns.enum';
+import { MessagePatterns } from 'src/constants/enums/message-patterns.enum';
+import { ServiceNames } from 'src/constants/enums/service-names.enum';
+import { CreateCategoryDto } from './domain/dto/create-category.dto';
+import { UpdateCategoryDto } from './domain/dto/update-category.dto';
 
 @Injectable()
 export class CategoriesService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+    @Inject(ServiceNames.CATEGORY_SERVICE)
+    private readonly client: ClientProxy,
+  ) {}
+
+  create(data: CreateCategoryDto) {
+    return this.client.emit(EventPatterns.CREATE_CATEGORY, data);
   }
 
   findAll() {
-    return `This action returns all categories`;
+    return this.client.send(MessagePatterns.LIST_CATEGORIES, {});
   }
 
   findOne(id: number) {
