@@ -30,7 +30,7 @@ export class CategoriesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.service.findOne(+id);
+    return this.service.findOne(id);
   }
 
   @Patch(':id')

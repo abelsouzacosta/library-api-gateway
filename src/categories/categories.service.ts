@@ -21,8 +21,8 @@ export class CategoriesService {
     return this.client.send(MessagePatterns.LIST_CATEGORIES, {});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  findOne(id: string) {
+    return this.client.send(MessagePatterns.GET_CATEGORY, id);
   }
 
   update(id: number, updateCategoryDto: UpdateCategoryDto) {
